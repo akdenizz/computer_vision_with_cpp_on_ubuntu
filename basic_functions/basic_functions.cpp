@@ -24,11 +24,14 @@ int main(){
 
     dilate(img_canny, img_dilate, kernel);
 
+    erode(img_dilate, img_erode, kernel);
+
     imshow("Original Image", img);
     imshow("Gray Image", img_gray);
     imshow("Gaussian Blur Image", img_blur);
     imshow("Canny Image", img_canny);
     imshow("Dilation Image", img_dilate);
-
+    imshow("Erode Image", img_erode);
+    
     waitKey(0);
 }
