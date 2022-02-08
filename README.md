@@ -32,19 +32,29 @@ $ sudo apt install libjasper1 libjasper-dev
 * Download OpenCV Sources using git
 
 ```
-$ sudo -s
-$ cd /opt
-$ git clone https://github.com/Itseez/opencv.git
-$ git clone https://github.com/Itseez/opencv_contrib.git
+$ sudo apt install build-essential cmake git pkg-config libgtk-3-dev \
+    libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+    libxvidcore-dev libx264-dev libjpeg-dev libpng-dev libtiff-dev \
+    gfortran openexr libatlas-base-dev python3-dev python3-numpy \
+    libtbb2 libtbb-dev libdc1394-22-dev
+$ mkdir ~/opencv_build && cd ~/opencv_build
+$ git clone https://github.com/opencv/opencv.git
+$ git clone https://github.com/opencv/opencv_contrib.git
+
 ```
 
-*Build & Install OpenCV
+* Build & Install OpenCV
 
 ```
-$ cd opencv
-$ mkdir release
-$ cd release
-$ cmake -D BUILD_TIFF=ON -D WITH_CUDA=ON -D ENABLE_AVX=OFF -D WITH_OPENGL=OFF -D WITH_OPENCL=OFF -D WITH_IPP=OFF -D WITH_TBB=ON -D BUILD_TBB=ON -D WITH_EIGEN=OFF -D WITH_V4L=OFF -D WITH_VTK=OFF -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D OPENCV_GENERATE_PKGCONFIG=ON -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=/opt/opencv_contrib/modules /opt/opencv/
+$ cd ~/opencv_build/opencv
+$ mkdir build && cd build
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D INSTALL_C_EXAMPLES=ON \
+    -D INSTALL_PYTHON_EXAMPLES=ON \
+    -D OPENCV_GENERATE_PKGCONFIG=ON \
+    -D OPENCV_EXTRA_MODULES_PATH=~/opencv_build/opencv_contrib/modules \
+    -D BUILD_EXAMPLES=ON ..
 ```
 
 
@@ -54,15 +64,14 @@ $ make -j8
 you can check your proc with command ```nproc``` 
 
 ```
-$ make install
-$ ldconfig
-$ exit
-$ cd ~
+$ sudo make install
+$ pkg-config --modversion opencv4
+
 ```
 * Check OpenCV version installed
 
 ```
-$ pkg-config --modversion opencv
+$ pkg-config --modversion opencv4
 ```
 
 * Find & Set “opencv.pc” file path 
@@ -112,11 +121,26 @@ int main( int argc, char** argv ) {
 * Compile the Code
 
 ```
-$ g++ test.cpp -o testoutput -std=c++11 `pkg-config --cflags --libs opencv`
+$ g++ test.cpp -o testoutput -std=c++11 `pkg-config --cflags --libs opencv4`
 ```
 
 * Execute the code in opencv_test directory
 
 ```
 $ ./testoutput
+```
+If you got some error like *libopencv_highgui.so.405: cannot open shared object file* :
+
+``` 
+$ sudo find / -name "libopencv_core.so.4.5*" 
+```
+output: ***/home/akdeniz/opencv_build/opencv/build/lib/libopencv_core.so.4.5.5***
+
+```
+$ sudo nano /etc/ld.so.conf.d/opencv.conf
+```
+copy the path into that file. For example: **/home/akdeniz/opencv_build/opencv/build/lib/**
+
+```
+$ sudo ldconfig -v
 ```
