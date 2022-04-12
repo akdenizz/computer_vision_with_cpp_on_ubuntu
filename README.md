@@ -25,7 +25,8 @@ $ sudo apt-get install libjpeg-dev libpng-dev libtiff5-dev libjasper-dev libdc13
 ```
 If you got an error like "unable to locate package" :
 
-```$ sudo apt-add-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+```
+$ sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 $ sudo apt update
 $ sudo apt install libjasper1 libjasper-dev
 ```
